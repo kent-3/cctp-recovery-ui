@@ -1,6 +1,9 @@
-const ARBITRUM_RPC = "https://arb1.arbitrum.io/rpc";
-const MESSAGE_TRANSMITTER = "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64";
-const IRIS_API = "https://iris-api.circle.com";
+const ARB_MAINNET_RPC = "https://arb1.arbitrum.io/rpc";
+const ARB_SEPOLIA_RPC = "https://sepolia-rollup.arbitrum.io/rpc";
+const MESSAGE_TRANSMITTER_MAINNET = "0x81D40F21F12A8F0E3252Bccb954D722d4c464B64";
+const MESSAGE_TRANSMITTER_SEPOLIA = "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
+const IRIS_MAINNET = "https://iris-api.circle.com";
+const IRIS_SANDBOX = "https://iris-api-sandbox.circle.com";
 
 const DOMAIN_NAMES: Record<string, string> = {
   "0": "Ethereum",
@@ -31,7 +34,11 @@ export interface LookupResult {
   };
 }
 
-async function lookupFromV2(sourceDomain: number, txHash: string) {
+async function lookupFromV2(
+  sourceDomain: number,
+  txHash: string,
+  irisApi: string,
+) {
   const url = `${IRIS_API}/v2/messages/${sourceDomain}?transactionHash=${txHash}`;
   const res = await fetch(url);
   if (!res.ok) {
@@ -81,6 +88,12 @@ async function lookupFromV2(sourceDomain: number, txHash: string) {
   };
 }
 
-export async function lookupFromTx(txHash: string): Promise<LookupResult> {
-  return lookupFromV2(3, txHash);
+export async function lookupFromTx(
+  txHash: string,
+  cluster: "devnet" | "mainnet-beta" = "mainnet-beta",
+): Promise<LookupResult> {
+  if (cluster === "devnet") {
+    return lookupFromV2(3, txHash, IRIS_SANDBOX);
+  }
+  return lookupFromV2(3, txHash, IRIS_MAINNET);
 }

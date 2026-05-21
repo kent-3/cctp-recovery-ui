@@ -25,17 +25,17 @@ import { lookupFromTx, type LookupResult } from "./arb";
  * CONFIG. Devnet is the validated default; switch to mainnet for a real
  * recovery and supply a mainnet RPC.
  * -------------------------------------------------------------------- */
-const CLUSTER: "devnet" | "mainnet-beta" = "devnet";
+const [cluster, setCluster] = useState<"devnet" | "mainnet-beta">("devnet");
 const RPC_URL =
-  CLUSTER === "devnet"
+  cluster === "devnet"
     ? "https://api.devnet.solana.com"
     : "https://api.mainnet-beta.solana.com";
 const NET: NetworkConfig = {
-  cluster: CLUSTER,
-  usdcMint: CLUSTER === "devnet" ? USDC_DEVNET : USDC_MAINNET,
+  cluster,
+  usdcMint: cluster === "devnet" ? USDC_DEVNET : USDC_MAINNET,
 };
 const EXPLORER = (sig: string) =>
-  `https://explorer.solana.com/tx/${sig}?cluster=${CLUSTER}`;
+  `https://explorer.solana.com/tx/${sig}?cluster=${cluster}`;
 
 type LogEntry = { kind: "info" | "ok" | "err"; text: string; sig?: string };
 
@@ -272,7 +272,7 @@ function RecoveryConsole() {
     setDecoded(null);
     setLookingUp(true);
     try {
-      const result = await lookupFromTx(txHash);
+      const result = await lookupFromTx(txHash, cluster);
       setMessageHex(result.messageHex);
       setAttestationHex(result.attestationHex);
       setRemoteTokenHex(result.remoteTokenHex);
@@ -290,6 +290,20 @@ function RecoveryConsole() {
     } finally {
       setLookingUp(false);
     }
+  };
+
+  const toggleCluster = () => {
+    setCluster((c) => (c === "devnet" ? "mainnet-beta" : "devnet"));
+    setSrcTxHash("");
+    setMessageHex("");
+    setAttestationHex("");
+    setRemoteTokenHex("");
+    setDecoded(null);
+    setVictimAddr(null);
+    setConverted(false);
+    setRelayed(false);
+    setVictimBalance(null);
+    setAuthorityAddr(null);
   };
 
   /* ---- gating ---- */
@@ -327,7 +341,7 @@ function RecoveryConsole() {
   return (
     <div className="shell">
       <header className="masthead">
-        <div className="netbadge">{CLUSTER}</div>
+        <div className="netbadge" onClick={toggleCluster} style={{ cursor: "pointer" }} title="Click to switch network">{cluster}</div>
         <h1>CCTP Recovery Console</h1>
         <div className="sub">
           Recover USDC sent via CCTP to a wallet address instead of a token
