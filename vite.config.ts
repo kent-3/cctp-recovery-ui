@@ -6,9 +6,9 @@ import react from "@vitejs/plugin-react";
 // heavyweight polyfill plugin.
 export default defineConfig({
   plugins: [react()],
-  base: "./",
+  base: "/cctp-recovery-ui/",
   build: {
-    outDir: "docs",
+    outDir: "dist",
   },
   define: {
     "process.env": {},
