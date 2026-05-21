@@ -44,7 +44,7 @@ type LogEntry = { kind: "info" | "ok" | "err"; text: string; sig?: string };
 type Phase = "prove" | "convert" | "recover";
 
 export function App() {
-  const [cluster, setCluster] = useState<"devnet" | "mainnet-beta">("devnet");
+  const [cluster, setCluster] = useState<"devnet" | "mainnet">("devnet");
   const RPC_URL =
     cluster === "devnet"
       ? "https://api.devnet.solana.com"
@@ -68,8 +68,8 @@ function RecoveryConsole({
   cluster,
   setCluster,
 }: {
-  cluster: "devnet" | "mainnet-beta";
-  setCluster: (c: "devnet" | "mainnet-beta") => void;
+  cluster: "devnet" | "mainnet";
+  setCluster: (c: "devnet" | "mainnet") => void;
 }) {
   const wallet = useWallet();
   const { connection } = useConnection();
@@ -304,7 +304,7 @@ function RecoveryConsole({
   };
 
   const toggleCluster = () => {
-    setCluster((c) => (c === "devnet" ? "mainnet-beta" : "devnet"));
+    setCluster((c) => (c === "devnet" ? "mainnet" : "devnet"));
     setSrcTxHash("");
     setMessageHex("");
     setAttestationHex("");
