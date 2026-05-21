@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   ConnectionProvider,
   WalletProvider,
@@ -25,16 +25,7 @@ import { lookupFromTx, type LookupResult } from "./arb";
  * CONFIG. Devnet is the validated default; switch to mainnet for a real
  * recovery and supply a mainnet RPC.
  * -------------------------------------------------------------------- */
-const [cluster, setCluster] = useState<"devnet" | "mainnet-beta">("devnet");
-const RPC_URL =
-  cluster === "devnet"
-    ? "https://api.devnet.solana.com"
-    : "https://api.mainnet-beta.solana.com";
-const NET: NetworkConfig = {
-  cluster,
-  usdcMint: cluster === "devnet" ? USDC_DEVNET : USDC_MAINNET,
-};
-const EXPLORER = (sig: string) =>
+const EXPLORER = (sig: string, cluster: string) =>
   `https://explorer.solana.com/tx/${sig}?cluster=${cluster}`;
 
 type LogEntry = { kind: "info" | "ok" | "err"; text: string; sig?: string };
@@ -53,18 +44,33 @@ type LogEntry = { kind: "info" | "ok" | "err"; text: string; sig?: string };
 type Phase = "prove" | "convert" | "recover";
 
 export function App() {
+  const [cluster, setCluster] = useState<"devnet" | "mainnet-beta">("devnet");
+  const RPC_URL =
+    cluster === "devnet"
+      ? "https://api.devnet.solana.com"
+      : "https://api.mainnet-beta.solana.com";
+
   return (
     <ConnectionProvider endpoint={RPC_URL}>
       <WalletProvider wallets={[]} autoConnect={false}>
         <WalletModalProvider>
-          <RecoveryConsole />
+          <RecoveryConsole
+            cluster={cluster}
+            setCluster={setCluster}
+          />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
 }
 
-function RecoveryConsole() {
+function RecoveryConsole({
+  cluster,
+  setCluster,
+}: {
+  cluster: "devnet" | "mainnet-beta";
+  setCluster: (c: "devnet" | "mainnet-beta") => void;
+}) {
   const wallet = useWallet();
   const { connection } = useConnection();
 
@@ -87,6 +93,11 @@ function RecoveryConsole() {
   const [lookingUp, setLookingUp] = useState(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
   const [decoded, setDecoded] = useState<LookupResult["decoded"] | null>(null);
+
+  const NET = useMemo(() => ({
+    cluster,
+    usdcMint: cluster === "devnet" ? USDC_DEVNET : USDC_MAINNET,
+  }), [cluster]);
 
   const pushLog = (e: LogEntry) => setLog((p) => [...p, e]);
   const info = (t: string) => pushLog({ kind: "info", text: t });
@@ -643,7 +654,7 @@ function RecoveryConsole() {
             {e.sig && (
               <>
                 {" "}
-                <a href={EXPLORER(e.sig)} target="_blank" rel="noreferrer">
+                <a href={EXPLORER(e.sig, cluster)} target="_blank" rel="noreferrer">
                   [view tx]
                 </a>
               </>
