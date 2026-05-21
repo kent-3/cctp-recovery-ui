@@ -27,3 +27,9 @@ npm run preview  # preview the production build
 ## Browser compatibility shims
 
 Vite config (`vite.config.ts`) includes Buffer/global shims required by Solana deps. Do not remove.
+
+## Deployment
+
+- `vite.config.ts` has `base: "/cctp-recovery-ui/"` because the site is hosted at a repo subdirectory on GitHub Pages.
+- Workflow `.github/workflows/deploy.yml` deploys `dist/` on every push to master.
+- If the repo is renamed or moved, update `base` in `vite.config.ts` and the workflow accordingly.
