@@ -6,6 +6,10 @@ import react from "@vitejs/plugin-react";
 // heavyweight polyfill plugin.
 export default defineConfig({
   plugins: [react()],
+  base: "./",
+  build: {
+    outDir: "docs",
+  },
   define: {
     "process.env": {},
     global: "globalThis",
