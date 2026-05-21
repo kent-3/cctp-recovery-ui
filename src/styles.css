@@ -1,0 +1,336 @@
+/* CCTP Recovery — industrial / terminal aesthetic.
+   Amber phosphor on near-black. Monospace. No rounded corners, no gloss.
+   The look says "operations console", which is what this is. */
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Bebas+Neue&display=swap");
+
+:root {
+  --bg: #0c0b09;
+  --panel: #15130f;
+  --panel-line: #2c2820;
+  --amber: #ffb000;
+  --amber-dim: #b97f08;
+  --text: #e8e0cf;
+  --text-dim: #8a8273;
+  --green: #5fcf6a;
+  --red: #ff5c4d;
+  --blue: #5fb8cf;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --display: "Bebas Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.55;
+  /* faint scanline texture */
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 176, 0, 0.022) 0px,
+    rgba(255, 176, 0, 0.022) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  min-height: 100vh;
+}
+
+.shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+/* --- header --- */
+.masthead {
+  border: 1px solid var(--panel-line);
+  background: var(--panel);
+  padding: 22px 24px;
+  margin-bottom: 28px;
+  position: relative;
+}
+.masthead::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--amber);
+}
+.masthead h1 {
+  font-family: var(--display);
+  font-size: 38px;
+  letter-spacing: 2px;
+  color: var(--amber);
+  line-height: 1;
+}
+.masthead .sub {
+  color: var(--text-dim);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+}
+.netbadge {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 3px 9px;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+/* --- step panels --- */
+.step {
+  border: 1px solid var(--panel-line);
+  background: var(--panel);
+  margin-bottom: 16px;
+}
+.step.locked {
+  opacity: 0.42;
+}
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--panel-line);
+}
+.step-num {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--amber);
+  letter-spacing: 1px;
+}
+.step-title {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.step-tag {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.step-tag.ok {
+  color: var(--green);
+}
+.step-body {
+  padding: 18px 20px;
+}
+.step-body p {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+/* --- fields --- */
+label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+}
+input,
+textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--panel-line);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 9px 11px;
+  margin-bottom: 14px;
+  resize: vertical;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--amber-dim);
+}
+textarea {
+  min-height: 70px;
+  word-break: break-all;
+  scrollbar-width: thin;
+  scrollbar-color: var(--amber-dim) var(--panel);
+}
+textarea::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+textarea::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+textarea::-webkit-scrollbar-thumb {
+  background: var(--amber-dim);
+}
+textarea::-webkit-scrollbar-thumb:hover {
+  background: var(--amber);
+}
+
+/* --- buttons --- */
+button.act {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--amber);
+  color: #1a1407;
+  border: none;
+  padding: 11px 20px;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+button.act:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+button.act:disabled {
+  background: var(--panel-line);
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+button.ghost {
+  background: transparent;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+}
+button.ghost:hover:not(:disabled) {
+  background: rgba(255, 176, 0, 0.08);
+}
+
+/* --- wallet rows --- */
+.wallet-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--panel-line);
+}
+.wallet-row:last-child {
+  border-bottom: none;
+}
+.wallet-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  min-width: 96px;
+}
+.addr {
+  color: var(--amber);
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* --- status log --- */
+.log {
+  margin-top: 14px;
+  border: 1px solid var(--panel-line);
+  background: var(--bg);
+  padding: 12px 14px;
+  font-size: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.log-line {
+  padding: 2px 0;
+}
+.log-line.info {
+  color: var(--text-dim);
+}
+.log-line.ok {
+  color: var(--green);
+}
+.log-line.err {
+  color: var(--red);
+}
+.log-line .ts {
+  color: var(--amber-dim);
+  margin-right: 8px;
+}
+.log-line a {
+  color: var(--amber);
+}
+
+.callout {
+  border-left: 3px solid var(--amber);
+  background: rgba(255, 176, 0, 0.05);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.callout strong {
+  color: var(--amber);
+}
+
+/* high-severity warning — visually distinct from the neutral callout */
+.danger {
+  border: 1px solid var(--red);
+  border-left-width: 3px;
+  background: rgba(255, 92, 77, 0.07);
+  padding: 12px 14px;
+  font-size: 12.5px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.danger strong {
+  color: var(--red);
+}
+
+/* proven-authority confirmation block — shown at the irreversible step */
+.confirmed {
+  border: 1px solid var(--green);
+  background: rgba(95, 207, 106, 0.06);
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.confirmed-label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.confirmed-check {
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 2px;
+}
+
+.balance-big {
+  font-family: var(--display);
+  font-size: 30px;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+
+/* wallet-adapter button restyle to match */
+.wallet-adapter-button {
+  font-family: var(--mono) !important;
+  font-size: 12px !important;
+  letter-spacing: 1px !important;
+  background: transparent !important;
+  border: 1px solid var(--amber-dim) !important;
+  color: var(--amber) !important;
+  border-radius: 0 !important;
+  height: auto !important;
+  padding: 8px 14px !important;
+}
+.wallet-adapter-button:hover {
+  background: rgba(255, 176, 0, 0.08) !important;
+}
