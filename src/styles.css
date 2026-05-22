@@ -275,6 +275,13 @@ button.ghost:hover:not(:disabled) {
 .callout strong {
   color: var(--amber);
 }
+.rpc-callout input {
+  margin-bottom: 6px;
+}
+.hint {
+  color: var(--text-dim);
+  font-size: 11px;
+}
 
 /* high-severity warning — visually distinct from the neutral callout */
 .danger {

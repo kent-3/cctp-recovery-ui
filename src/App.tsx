@@ -28,6 +28,9 @@ import { lookupFromTx, type LookupResult } from "./arb";
 const EXPLORER = (sig: string, cluster: string) =>
   `https://explorer.solana.com/tx/${sig}?cluster=${cluster}`;
 
+const DEVNET_RPC_URL = "https://api.devnet.solana.com";
+const MAINNET_RPC_URL = "https://api.mainnet-beta.solana.com";
+
 type LogEntry = { kind: "info" | "ok" | "err"; text: string; sig?: string };
 
 /* ----------------------------------------------------------------------
@@ -45,10 +48,11 @@ type Phase = "prove" | "convert" | "recover";
 
 export function App() {
   const [cluster, setCluster] = useState<"devnet" | "mainnet">("devnet");
+  const [mainnetRpcUrl, setMainnetRpcUrl] = useState("");
   const RPC_URL =
     cluster === "devnet"
-      ? "https://api.devnet.solana.com"
-      : "https://api.mainnet-beta.solana.com";
+      ? DEVNET_RPC_URL
+      : mainnetRpcUrl.trim() || MAINNET_RPC_URL;
 
   return (
     <ConnectionProvider endpoint={RPC_URL}>
@@ -57,6 +61,8 @@ export function App() {
           <RecoveryConsole
             cluster={cluster}
             setCluster={setCluster}
+            mainnetRpcUrl={mainnetRpcUrl}
+            setMainnetRpcUrl={setMainnetRpcUrl}
           />
         </WalletModalProvider>
       </WalletProvider>
@@ -67,9 +73,13 @@ export function App() {
 function RecoveryConsole({
   cluster,
   setCluster,
+  mainnetRpcUrl,
+  setMainnetRpcUrl,
 }: {
   cluster: "devnet" | "mainnet";
   setCluster: (c: "devnet" | "mainnet") => void;
+  mainnetRpcUrl: string;
+  setMainnetRpcUrl: (url: string) => void;
 }) {
   const wallet = useWallet();
   const { connection } = useConnection();
@@ -367,6 +377,26 @@ function RecoveryConsole({
         the CCTP transfer) and convert it. Finally, reconnect the authority
         wallet to relay and collect the funds.
       </div>
+
+      {cluster === "mainnet" && (
+        <div className="callout rpc-callout">
+          <strong>Mainnet RPC required.</strong> The public Solana mainnet RPC
+          may reject browser recovery requests with 403. Paste a provider RPC
+          URL before converting or relaying.
+          <label style={{ marginTop: 10 }}>Mainnet RPC URL</label>
+          <input
+            type="password"
+            value={mainnetRpcUrl}
+            onChange={(e) => setMainnetRpcUrl(e.target.value)}
+            placeholder="https://your-mainnet-rpc-provider/..."
+          />
+          <div className="hint">
+            {mainnetRpcUrl.trim()
+              ? "Using custom mainnet RPC for this session."
+              : "No custom RPC set; using the public endpoint, which may fail."}
+          </div>
+        </div>
+      )}
 
       {/* ---- PHASE 1: prove ---- */}
       <div className={`step ${phase === "prove" ? "" : ""}`}>
