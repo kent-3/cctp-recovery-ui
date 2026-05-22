@@ -47,7 +47,7 @@ type LogEntry = { kind: "info" | "ok" | "err"; text: string; sig?: string };
 type Phase = "prove" | "convert" | "recover";
 
 export function App() {
-  const [cluster, setCluster] = useState<"devnet" | "mainnet">("devnet");
+  const [cluster, setCluster] = useState<"devnet" | "mainnet">("mainnet");
   const [mainnetRpcUrl, setMainnetRpcUrl] = useState("");
   const RPC_URL =
     cluster === "devnet"
@@ -381,9 +381,12 @@ function RecoveryConsole({
 
       {cluster === "mainnet" && (
         <div className="callout rpc-callout">
-          <strong>Mainnet RPC required.</strong> The public Solana mainnet RPC
-          may reject browser recovery requests with 403. Paste a provider RPC
-          URL before converting or relaying.
+          <div className="rpc-title">Mainnet RPC Required</div>
+          <p>
+            Paste your provider RPC URL here before converting, relaying, or
+            checking balances. The public Solana mainnet RPC may reject browser
+            recovery requests with 403.
+          </p>
           <label style={{ marginTop: 10 }}>Mainnet RPC URL</label>
           <input
             type="text"
@@ -394,7 +397,7 @@ function RecoveryConsole({
           <div className="hint">
             {mainnetRpcUrl.trim()
               ? "Using custom mainnet RPC for this session."
-              : "No custom RPC set; using the public endpoint, which may fail."}
+              : "No custom RPC set. Mainnet actions may fail or show misleading account-state errors."}
           </div>
         </div>
       )}

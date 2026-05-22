@@ -275,7 +275,25 @@ button.ghost:hover:not(:disabled) {
 .callout strong {
   color: var(--amber);
 }
+.rpc-callout {
+  border: 1px solid var(--amber);
+  border-left-width: 5px;
+  background: rgba(255, 176, 0, 0.1);
+  box-shadow: 0 0 0 1px rgba(255, 176, 0, 0.08) inset;
+}
+.rpc-callout p {
+  color: var(--text);
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+.rpc-title {
+  color: var(--amber);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 .rpc-callout input {
+  border-color: var(--amber-dim);
   margin-bottom: 6px;
 }
 .hint {

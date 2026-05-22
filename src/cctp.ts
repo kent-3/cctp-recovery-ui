@@ -174,10 +174,37 @@ export async function buildRelayTx(
   const { messageHex, attestationHex, victim, remoteTokenHex, caller } = params;
 
   // victim must already be a USDC token account.
-  const acct = await getAccount(connection, victim).catch(() => null);
-  if (!acct) {
+  let acct;
+  try {
+    acct = await getAccount(connection, victim);
+  } catch (tokenErr: any) {
+    let info;
+    try {
+      info = await connection.getAccountInfo(victim);
+    } catch (rpcErr: any) {
+      throw new Error(
+        `Could not read relay recipient ${victim.toBase58()} on ${net.cluster}: ` +
+          `${rpcErr.message ?? rpcErr}`,
+      );
+    }
+
+    const tokenDetail = tokenErr?.message ? ` (${tokenErr.message})` : "";
+    if (!info) {
+      throw new Error(
+        `Relay recipient ${victim.toBase58()} does not exist on ${net.cluster}. ` +
+          `Confirm the network and recipient address.${tokenDetail}`,
+      );
+    }
+    if (info.owner.equals(SystemProgram.programId)) {
+      throw new Error(
+        `Relay recipient ${victim.toBase58()} is still a normal System account ` +
+          `on ${net.cluster}, not a token account. Confirm the conversion ` +
+          `transaction landed on this network for this exact address.${tokenDetail}`,
+      );
+    }
     throw new Error(
-      "Recipient is not yet a token account — run Convert first.",
+      `Relay recipient ${victim.toBase58()} is owned by ${info.owner.toBase58()}, ` +
+        `not the SPL Token program ${TOKEN_PROGRAM_ID.toBase58()}.${tokenDetail}`,
     );
   }
   if (!acct.mint.equals(net.usdcMint)) {
