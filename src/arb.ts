@@ -39,7 +39,7 @@ async function lookupFromV2(
   txHash: string,
   irisApi: string,
 ) {
-  const url = `${IRIS_API}/v2/messages/${sourceDomain}?transactionHash=${txHash}`;
+  const url = `${irisApi}/v2/messages/${sourceDomain}?transactionHash=${txHash}`;
   const res = await fetch(url);
   if (!res.ok) {
     const text = await res.text();

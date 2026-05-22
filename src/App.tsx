@@ -237,7 +237,9 @@ function RecoveryConsole({
       });
       const sig = await send(tx);
       ok("Relay submitted — USDC minted into the recipient account.", sig);
+      setConverted(true);
       setRelayed(true);
+      setPhase("recover");
       setVictimBalance(await readVictimBalance(connection, victimAddr));
     } catch (e: any) {
       err(`Relay failed: ${e.message ?? e}`);
@@ -345,7 +347,6 @@ function RecoveryConsole({
     (!authorityAddr || !connected.equals(authorityAddr));
   const canRelay = !busy && !relayed;
   const canRecover =
-    phase === "recover" &&
     proven &&
     !busy &&
     !wrongWalletForRecover &&
@@ -385,7 +386,7 @@ function RecoveryConsole({
           URL before converting or relaying.
           <label style={{ marginTop: 10 }}>Mainnet RPC URL</label>
           <input
-            type="password"
+            type="url"
             value={mainnetRpcUrl}
             onChange={(e) => setMainnetRpcUrl(e.target.value)}
             placeholder="https://your-mainnet-rpc-provider/..."

@@ -1,0 +1,1 @@
+- **2026-05-21 rpc input visibility**: Assumed an API-key-bearing RPC input should be hidden as a password field, but the user wanted it visible for usability. -> Do not mask configuration URLs by default unless the user asks for masking or the app already uses that pattern.
