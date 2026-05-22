@@ -386,7 +386,7 @@ function RecoveryConsole({
           URL before converting or relaying.
           <label style={{ marginTop: 10 }}>Mainnet RPC URL</label>
           <input
-            type="url"
+            type="text"
             value={mainnetRpcUrl}
             onChange={(e) => setMainnetRpcUrl(e.target.value)}
             placeholder="https://your-mainnet-rpc-provider/..."

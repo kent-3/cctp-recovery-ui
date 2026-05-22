@@ -15,7 +15,6 @@ import {
   SystemProgram,
   Transaction,
   TransactionInstruction,
-  ComputeBudgetProgram,
 } from "@solana/web3.js";
 import {
   TOKEN_PROGRAM_ID,
@@ -266,9 +265,7 @@ export async function buildRelayTx(
     .remainingAccounts(remainingAccounts)
     .instruction();
 
-  const tx = new Transaction()
-    .add(ComputeBudgetProgram.setComputeUnitLimit({ units: 400_000 }))
-    .add(ix);
+  const tx = new Transaction().add(ix);
   tx.feePayer = caller;
   return tx;
 }

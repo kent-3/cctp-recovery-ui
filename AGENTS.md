@@ -13,7 +13,7 @@ npm run preview  # preview the production build
 ## Key files
 
 - `src/App.tsx` — `cluster` state (devnet default). Toggle via the UI badge in the header. Supply a paid mainnet RPC for real recovery.
-- `src/cctp.ts` — transaction builders. `buildRelayTx` sets compute unit limit to 400k; adjust in that file if relay hits CU errors on mainnet.
+- `src/cctp.ts` — transaction builders. `buildRelayTx` intentionally omits a compute-budget instruction because the CCTP receive message is close to Solana's transaction-size limit on mainnet.
 - `src/arb.ts` — Arbitrum tx lookup utility (`lookupFromTx`). Queries the MessageTransmitter for the `MessageSent` event, fetches attestation from Circle's API, and decodes the message body. Handles all major error cases (pending attestation, ambiguous tx, no event found).
 
 ## Architecture
